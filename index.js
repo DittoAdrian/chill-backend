@@ -3,11 +3,14 @@ const cors = require('cors')
 import {getUsers,getUser,createUser, updateUser, deleteUser} from './database.js'
 const app = express()
 
-app.use(cors({ //membolehkan Cross-Origin Resource Sharing untuk testing di local
-    origin: 'http://localhost:5173'
-}))
 app.use(express.json())
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
+app.options('*', cors());
 
 //route get all Users
 app.get('/users',async (req, res)=>{
