@@ -1,5 +1,5 @@
 import express from 'express'
-const cors = require('cors')
+import cors from 'cors' 
 import {getUsers,getUser,createUser, updateUser, deleteUser} from './database.js'
 const app = express()
 
