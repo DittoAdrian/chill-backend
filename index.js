@@ -1,6 +1,11 @@
 import express from 'express'
-const app = express()
+const cors = require('cors')
 import {getUsers,getUser,createUser, updateUser, deleteUser} from './database.js'
+const app = express()
+
+app.use(cors({ //membolehkan Cross-Origin Resource Sharing untuk testing di local
+    origin: 'http://localhost:5173'
+}))
 app.use(express.json())
 
 
