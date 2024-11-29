@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import {
     getUsers,
     getUser,
+    getUserByUsername,
     createUser,
     updateUser,
     deleteUser,
