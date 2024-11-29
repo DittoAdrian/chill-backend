@@ -29,12 +29,11 @@ app.get('/users/:id',async (req, res)=>{
 // route create user
 app.post('/users', async (req, res)=>{
     try {
-        // Panggil fungsi createUser
         const note = await createUser(name, username, password, email);
         res.status(201).send(note);
     } catch (error) {
         console.error("Error creating user:", error);
-        res.status(500).send({ message: error });
+        res.send(error);
     }
 }) 
 

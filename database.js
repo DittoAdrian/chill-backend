@@ -40,12 +40,16 @@ export async function createUser(name, username, password, email) {
     const premium = 0;
     const verification = 1;
     const token = '';
-    const [result] = await pool.query(`
-        INSERT INTO users (name, username, password, email, premium, verification, token)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-        `, [name, username, password, email, premium, verification, token])
-        const id = result.insertId
-        return getUser(id)
+    try{
+        const [result] = await pool.query(`
+            INSERT INTO users (name, username, password, email, premium, verification, token)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            `, [name, username, password, email, premium, verification, token])
+            const id = result.insertId
+            return getUser(id)
+    }catch(error){
+        return error
+    }
 }
 
 //  patch (update) user
