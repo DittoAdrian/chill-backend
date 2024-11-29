@@ -28,8 +28,8 @@ app.get('/users/:id',async (req, res)=>{
 
 // route create user
 app.post('/users', async (req, res)=>{
-    const {username, password, email} = req.body
-    const note = await createUser(username, password, email)
+    const {name, username, password, email} = req.body
+    const note = await createUser(name, username, password, email)
     res.status(201).send(note);
 }) 
 
