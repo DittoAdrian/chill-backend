@@ -2,15 +2,20 @@ import express from 'express'
 import cors from 'cors' 
 import {getUsers,getUser,createUser, updateUser, deleteUser} from './database.js'
 const app = express()
+import bodyParser from 'body-parser'
+import router from './routes/auth.js'
 
 app.use(express.json())
+app.use(bodyParser.json());
+
 app.use(cors({
     origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
 app.options('*', cors());
+
+app.use('/auth',router)
 
 //route get all Users
 app.get('/users',async (req, res)=>{
