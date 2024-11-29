@@ -48,7 +48,7 @@ export async function createUser(name, username, password, email) {
             const id = result.insertId
             return getUser(id)
     }catch(error){
-        return error
+        throw error
     }
 }
 
