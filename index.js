@@ -82,7 +82,7 @@ app.post('/login', async (req, res) => {
 });
 
 // Route update user
-app.patch('/users/:id', authenticateToken, async (req, res) => {
+app.patch('/users/:id', async (req, res) => {
     const id = req.params.id;
     const { username, password, email } = req.body;
 
@@ -94,14 +94,14 @@ app.patch('/users/:id', authenticateToken, async (req, res) => {
 });
 
 // Route delete user
-app.delete('/users/:id', authenticateToken, async (req, res) => {
+app.delete('/users/:id',  async (req, res) => {
     const id = req.params.id;
     const user = await deleteUser(id);
     res.send(user);
 });
 
 // Protected route contoh
-app.get('/protected', authenticateToken, (req, res) => {
+app.get('/protected',  (req, res) => {
     res.send(`Welcome, ${req.user.username}! You have access to this protected route.`);
 });
 
