@@ -26,17 +26,17 @@ app.use(
 app.options('*', cors());
 
 // Middleware untuk verifikasi token
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1];
-    if (!token) return res.status(401).send('Access denied. No token provided.');
+// const authenticateToken = (req, res, next) => {
+//     const authHeader = req.headers.authorization;
+//     const token = authHeader && authHeader.split(' ')[1];
+//     if (!token) return res.status(401).send('Access denied. No token provided.');
 
-    jwt.verify(token, SECRET_KEY, (err, user) => {
-        if (err) return res.status(403).send('Invalid token.');
-        req.user = user;
-        next();
-    });
-};
+//     jwt.verify(token, SECRET_KEY, (err, user) => {
+//         if (err) return res.status(403).send('Invalid token.');
+//         req.user = user;
+//         next();
+//     });
+// };
 
 // Route get all Users
 app.get('/users', async (req, res) => {
