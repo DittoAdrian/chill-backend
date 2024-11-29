@@ -37,13 +37,17 @@ export async function getUserByUsername(username){
 
 // insert user
 export async function createUser(name, username, password, email) {
+    const premium = 0;
+    const verification = 1;
+    const token = '';
     const [result] = await pool.query(`
         INSERT INTO users (name, username, password, email, premium, verification, token)
         VALUES (?, ?, ?, ?, ?, ?, ?)
-        `, [name, username, password, email, 0,1,''])
+        `, [name, username, password, email, premium, verification, token])
         const id = result.insertId
         return getUser(id)
 }
+
 //  patch (update) user
 export async function updateUser(id, username, password, email){
     const [result] = await pool.query(
