@@ -36,15 +36,12 @@ export async function getUserByUsername(username){
 }
 
 // insert user
-export async function createUser(name, username, password, email) {
-    const premium = 0;
-    const verification = 1;
-    const token = '';
+export async function createUser( name, username, password, email, premium, verification, token) {
     try{
         const [result] = await pool.query(`
-            INSERT INTO users (name, username, password, email, premium, verification, token)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            `, [name, username, password, email, premium, verification, token])
+      INSERT INTO your_table_name (name, username, password, email, premium, verification, token)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `, [name, username, password, email, premium || 0, verification || 0, token || ''])
             const id = result.insertId
             return getUser(id)
     }catch(error){
