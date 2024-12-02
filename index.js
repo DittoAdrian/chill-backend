@@ -29,20 +29,15 @@ app.get('/users/:id',async (req, res)=>{
 // route create user
 app.post('/users', async (req, res)=>{
     const {name, username, password, email, premium, verification, token} = req.body
-    try {
-        const note = await createUser(name, username, password, email, premium, verification, token);
-        res.status(201).send(note);
-    } catch (error) {
-        console.error("Error creating user:", error);
-        res.send(error);
-    }
+    const note = await createUser(name, username, password, email, premium, verification, token);
+    res.status(201).send(note); 
 }) 
 
 // route Update user
 app.patch('/users/:id', async (req, res)=>{
     const id = req.params.id;
-    const {username, password, email} = req.body
-    const note = await updateUser(id, username, password, email)
+    const userData = req.body;
+    const note = await updateUser(id, userData);
     res.status(200).send(note);
 })
 

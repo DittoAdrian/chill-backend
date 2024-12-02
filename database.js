@@ -26,6 +26,7 @@ export async function getUser(id) {
     return rows[0]
 }
 
+//get user by username
 export async function getUserByUsername(username){
     const [rows] = await pool.query(`
         SELECT *
@@ -36,11 +37,11 @@ export async function getUserByUsername(username){
 }
 
 // insert user
-export async function createUser( name, username, password, email, premium, verification, token) {
+export async function createUser(name, username, password, email, premium, verification, token) {
     try{
         const [result] = await pool.query(`
-      INSERT INTO users (name, username, password, email, premium, verification, token)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO users (name, username, password, email, premium, verification, token)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     `, [name, username, password, email, premium || 0, verification || 0, token || ''])
             const id = result.insertId
             return getUser(id)
@@ -50,19 +51,54 @@ export async function createUser( name, username, password, email, premium, veri
 }
 
 //  patch (update) user
-export async function updateUser(id, username, password, email){
-    const [result] = await pool.query(
-        `UPDATE users 
-         SET username = ?, password = ?, email = ? 
-         WHERE id = ?`,
-        [username, password, email, id]
-    );
+export async function updateUser(id, userData){
+    //array data yang ingin diupdate
+    const updateFields = [];
+    const updateValues = [];
+
+    //cari data apa saja yang teradpat pada json
+    if (userData.name){
+        updateFields.push('name = ?');
+        updateValues.push(userData.name);
+    }if(userData.username){
+        updateFields.push('username = ?');
+        updateValues.push(userData.username);
+    }if (userData.password){
+        updateFields.push('password = ?');
+        updateValues.push(userData.password);
+    }if (userData.email){
+        updateFields.push('email = ?');
+        updateValues.push(userData.email);
+    }if (userData.premium){
+        updateFields.push('premium = ?');
+        updateValues.push(userData.premium);
+    }if (userData.verification){
+        updateFields.push('verification = ?');
+        updateValues.push(userData.verification);
+    }if (userData.token){
+        updateFields.push('token = ?');
+        updateValues.push(userData.token);
+    }
+    if (updateFields.length === 0) {
+        throw new Error('Tidak ada data yang diupdate');
+    } 
+    //memasukan id diahkir
+    updateValues.push(id);
+
+    const query = `
+        UPDATE users 
+        SET ${updateFields.join(',')}
+        WHERE id = ?`;
+
+    const [result] = await pool.query(query,updateValues);
+
     if (result.affectedRows > 0) {
         return getUser(id);
     } else {
         throw new Error(`User dengan ID ${id} tidak ditemukan.`);
     }
 }
+
 //  delete user
 export async function deleteUser(id){
     const [result] = await pool.query(`
