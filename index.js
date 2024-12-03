@@ -1,6 +1,13 @@
 import express from 'express'
 import cors from 'cors' 
-import {getUsers,getUser,createUser, updateUser, deleteUser} from './database.js'
+import {
+    getUsers,
+    getUser,
+    createUser,
+    updateUser,
+    deleteUser,
+    loginUser
+    } from './database.js'
 const app = express()
 
 
@@ -12,6 +19,8 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.options('*', cors());
+
+// ========== CRUD ==========
 
 //route get all Users
 app.get('/users',async (req, res)=>{
@@ -49,13 +58,28 @@ app.delete('/users/:id',async (req, res)=>{
 })
 
 
-// erorr handler
+// ========== Login ==========
+app.post('/login', async (req, res)=>{
+    const userData = req.body;
+    const data = await loginUser(userData)
+    console.log(data)
+    res.status(200).send(data)
+});
+
+
+
+
+
+
+
+// ========== Error Handler ==========
 app.use((err, req, res, next) => {
     console.error(err.stack)
     res.status(500).send('Something broke!')
   })
 
-// listener
+// ========== Listener ==========
 app.listen(3030,()=>{
     console.log('serverunning on port 3030')
 })
+

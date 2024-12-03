@@ -1,8 +1,9 @@
 import mysql from 'mysql2'
-
 import dotenv from 'dotenv'
+import bcrypt from 'bcrypt'
 dotenv.config()
 
+// Pool Database
 const pool = mysql.createPool({
     host : process.env.MYSQL_HOST,
     user :  process.env.MYSQL_USER,
@@ -32,8 +33,12 @@ export async function getUserByUsername(username){
         SELECT *
         FROM users
         WHERE username = ? 
-        `, [username])
-    return rows[0]
+        `, [username]);
+        if (rows[0]) {
+            return rows[0];
+        } else {
+            throw new Error(`User dengan ID ${username} tidak ditemukan.`);
+        }
 }
 
 // insert user
@@ -49,6 +54,7 @@ export async function createUser(name, username, password, email, premium, verif
         throw error
     }
 }
+ 
 
 //  patch (update) user
 export async function updateUser(id, userData){
@@ -106,8 +112,39 @@ export async function deleteUser(id){
         WHERE id = ?
         `, [id])
     if (result.affectedRows > 0) {
-         return { message: `User dengan ID ${id} berhasil dihapus.` };
+         return { message: `User dengan ID ${id} berhasil dihapus.`};
     } else {
         throw new Error(`User dengan ID ${id} tidak ditemukan.`);
     }
 }
+
+// Login User
+export async function loginUser(userData) {
+    const {username, password} = userData;
+    try{
+        const resultUname = await getUserByUsername(username)
+        // const hashPass = await bcrypt.hash(resultUname.password, 10)
+        const isMatch = resultUname.password == password;
+        if (isMatch){
+            return {
+                status : 200,
+                message: "Login berhasil!",
+                token : ''
+                // nanti return token untuk user
+            };
+        }else{
+            return {
+                status: 401,
+                message: "Username atau password salah."
+              };
+        }
+    }catch(error){
+        throw error
+    }
+}
+
+
+const password = 'gilang123'
+const hash = await bcrypt.hash(password,12);
+const isMatch = await bcrypt.compare("gilang123", hash);
+console.log(isMatch)
