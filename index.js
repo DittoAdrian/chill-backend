@@ -6,7 +6,8 @@ import {
     createUser,
     updateUser,
     deleteUser,
-    loginUser
+    loginUser,
+    registerUser
     } from './database.js'
 const app = express()
 
@@ -66,12 +67,12 @@ app.post('/login', async (req, res)=>{
     res.status(200).send(data)
 });
 
-// // ========== Login ==========
-// app.post('/users', async (req, res)=>{
-//     const {name, username, password, email, premium, verification, token} = req.body
-//     const note = await createUser(name, username, password, email, premium, verification, token);
-//     res.status(201).send(note); 
-// }) 
+// // ========== Register ==========
+app.post('/register', async (req, res)=>{
+    const userData = req.body
+    const note = await registerUser(userData);
+    res.status(201).send(note); 
+}) 
 
 
 

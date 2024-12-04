@@ -123,16 +123,25 @@ export async function loginUser(userData) {
         const resultUname = await getUserByUsername(username);
         if (!resultUname) {
             return {
-                status: 401,
-                message: "Username atau password salah."
+                status : 401,
+                message : "Username atau password salah."
             };
         }
-        // Verifikasi password
+
+        // Cek Verifikasi
+        if(!resultUname.verification){
+            return {
+                status : 403,
+                message : "Tidak dapat login, Akun belum terverivikasi"
+            };
+        };
+
+        // Compare Password
         const isMatch = await bcrypt.compare(password, resultUname.password);
         if (isMatch) {
             return {
-                status: 200,
-                message: "Login berhasil!"
+                status : 200,
+                message : "Login berhasil!"
             };
         } else {
             return {
@@ -172,7 +181,7 @@ export async function registerUser(userData){
             INSERT INTO users (name, username, password, email, premium, verification, token)
             VALUES (?, ?, ?, ?, ?, ?, ?)
             `
-        const value = [name, username, hashPass, email, premium || 0, verification || 0, token || '']
+        const value = [name, username, hashPass, email, 0, 0, '']
         
         const [result] = await pool.query(query, value);
         const id = result.insertId;
