@@ -36,9 +36,7 @@ export async function getUserByUsername(username){
         `, [username]);
         if (rows[0]) {
             return rows[0];
-        } else {
-            throw new Error(`User dengan ID ${username} tidak ditemukan.`);
-        }
+        } 
 }
 
 // insert user
@@ -120,31 +118,73 @@ export async function deleteUser(id){
 
 // Login User
 export async function loginUser(userData) {
-    const {username, password} = userData;
-    try{
-        const resultUname = await getUserByUsername(username)
-        // const hashPass = await bcrypt.hash(resultUname.password, 10)
-        const isMatch = resultUname.password == password;
-        if (isMatch){
-            return {
-                status : 200,
-                message: "Login berhasil!",
-                token : ''
-                // nanti return token untuk user
-            };
-        }else{
+    const { username, password } = userData;
+    try {
+        const resultUname = await getUserByUsername(username);
+        if (!resultUname) {
             return {
                 status: 401,
                 message: "Username atau password salah."
-              };
+            };
         }
+        // Verifikasi password
+        const isMatch = await bcrypt.compare(password, resultUname.password);
+        if (isMatch) {
+            return {
+                status: 200,
+                message: "Login berhasil!"
+            };
+        } else {
+            return {
+                status: 401,
+                message: "Username atau password salah."
+            };
+        }
+    } catch (error) {
+        console.error("Login Error:", error);
+        throw error;
+    }
+}
+
+// Register 
+export async function registerUser(userData){
+    const {name, username, password, email} = userData;
+
+    // Cek kelengkapan data yang dimasukan user
+    if (!name || !username || !password || !email) {
+        return {
+            status: 400,
+            message: "Masukkan data dengan lengkap!"
+        }}
+
+    try{
+        // Cari Username
+        const resultUname = await getUserByUsername(username);
+            if (resultUname) {
+                return {
+                    "status": 409,
+                    "message": "Username sudah digunakan"
+                };
+            }
+        const hashPass = await bcrypt.hash(password,12);
+        // Const Token = untuk generate token
+        const query =`
+            INSERT INTO users (name, username, password, email, premium, verification, token)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            `
+        const value = [name, username, hashPass, email, premium || 0, verification || 0, token || '']
+        
+        const [result] = await pool.query(query, value);
+        const id = result.insertId;
+        const newUserData = await getUser(id);
+
+        return {
+            "status" : 201,
+            "message" : "data berhasil dibuat",
+            "data" : newUserData
+        }
+
     }catch(error){
         throw error
     }
 }
-
-
-const password = 'gilang123'
-const hash = await bcrypt.hash(password,12);
-const isMatch = await bcrypt.compare("gilang123", hash);
-console.log(isMatch)
