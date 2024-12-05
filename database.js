@@ -1,6 +1,7 @@
-import mysql from 'mysql2'
-import dotenv from 'dotenv'
-import bcrypt from 'bcrypt'
+import mysql from 'mysql2';
+import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 dotenv.config()
 
 // Pool Database
@@ -120,6 +121,7 @@ export async function deleteUser(id){
 export async function loginUser(userData) {
     const { username, password } = userData;
     try {
+        // Cek Username
         const resultUname = await getUserByUsername(username);
         if (!resultUname) {
             return {
@@ -127,7 +129,6 @@ export async function loginUser(userData) {
                 message : "Username atau password salah."
             };
         }
-
         // Cek Verifikasi
         if(!resultUname.verification){
             return {
@@ -135,13 +136,24 @@ export async function loginUser(userData) {
                 message : "Tidak dapat login, Akun belum terverivikasi"
             };
         };
-
         // Compare Password
         const isMatch = await bcrypt.compare(password, resultUname.password);
         if (isMatch) {
+            // Generate Token for User
+            const payload = 
+            {
+                id : resultUname.id,
+                username : resultUname.username,
+                password : userData.password
+            }
+            const secret = process.env.SECRET_KEY ;
+            const timeExp = 60 * 60 * 2
+            const token = jwt.sign(payload, "secret_KEY", {expiresIn : timeExp});
+        
             return {
                 status : 200,
-                message : "Login berhasil!"
+                message : "Login berhasil!",
+                token :  token
             };
         } else {
             return {
