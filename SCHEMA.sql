@@ -1,17 +1,27 @@
 CREATE TABLE users (
-    id integer PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(30)
-    username VARCHAR(30),
-    password VARCHAR(30),
-    email VARCHAR(60),
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    username VARCHAR(30) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(60) NOT NULL UNIQUE,
+    role ENUM('admin', 'user') DEFAULT 'user',
     premium TINYINT(1) NOT NULL DEFAULT 0,
     verification TINYINT(1) NOT NULL DEFAULT 0,
-    token VARCHAR(8),
-    created  TIMESTAMP NOT NULL DEFAULT NOW()
+    token VARCHAR(255),
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO users (username, password, email, premium, verification, token)
-    VALUES 
-    ("putraganteng","putraganteng123","putraganteng@gmail.com",0,1,'88888888'),
-    ("falah666","falah123","falah@gmail.com",0,1,'88888888'),
-    ("gilang777","gilang123","gilang@gmail.com",0,1,'88888888');
+INSERT INTO users (name, username, password, email, token)
+    VALUES (
+        'putra',
+        'putraganteng',
+        '$2b$12$XCgGoCbE.nLbux9akjaQDe03KxM9y4IqmeXcNKZUsdmaZX/40Vl.i',
+        'putra@gmail.com',
+        '0857'
+    );
+
+CREATE TABLE verification (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    verification_code VARCHAR(4),
+)
