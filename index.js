@@ -78,7 +78,6 @@ app.post('/register', async (req, res)=>{
 
 
 
-
 // ========== Error Handler ==========
 app.use((err, req, res, next) => {
     console.error(err.stack)

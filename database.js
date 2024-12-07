@@ -50,7 +50,7 @@ export async function getUserByUsername(username) {
 
 // insert user
 export async function createUser(userData) {
-  const {name, username, password, email} = userData;
+  const { name, username, password, email } = userData;
 
   try {
     const [result] = await pool.query(
@@ -130,6 +130,24 @@ export async function updateUser(id, userData) {
   }
 }
 
+//Update Token
+async function updateToken(userData) {
+  const { id, token } = userData;
+
+  try {
+    const query = `
+    UPDATE users
+    SET token = ?
+    WHERE id = ?`;
+    const value = [token, id];
+
+    const [result] = await pool.query(query, value);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
 //  delete user
 export async function deleteUser(id) {
   const [result] = await pool.query(
@@ -151,7 +169,7 @@ export async function loginUser(userData) {
   const { username, password } = userData;
 
   // Cek Kelengkapan Data
-  if(!username || !password){
+  if (!username || !password) {
     return {
       status: 400,
       message: "Masukkan data dengan lengkap!",
@@ -177,16 +195,21 @@ export async function loginUser(userData) {
     // Compare Password
     const isMatch = await bcrypt.compare(password, resultUname.password);
     if (isMatch) {
-
+      //Generate Token
       const payload = {
         username: resultUname.username,
-        role : resultUname.role
-        };
+        role: resultUname.role,
+      };
       const secret = process.env.SECRET_KEY;
       const timeExp = 60 * 60 * 2;
       const token = jwt.sign(payload, secret, { expiresIn: timeExp });
 
-      //function Kirim Token baru ke database
+      //Function Kirim Token baru ke database (percobaaan)
+      const updateTokenPayload = {
+        id: resultUname.id,
+        token: token,
+      };
+      updateToken(updateTokenPayload);
 
       return {
         status: 200,
@@ -233,8 +256,8 @@ export async function registerUser(userData) {
     // Generate Token for User
     const payload = {
       username: username,
-      role : 'user'
-      };
+      role: "user",
+    };
     const secret = process.env.SECRET_KEY;
     const timeExp = 60 * 60 * 2;
     const token = jwt.sign(payload, secret, { expiresIn: timeExp });
