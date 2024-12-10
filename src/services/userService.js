@@ -15,25 +15,25 @@ import {
 } from '../repositories/userRepository.js'
 
 // ========== CRUD ==========
-export const getUsersS = async () => {
+export const serviceGetUsers = async () => {
      return await getUsers();
 };
-export const getUserS = async (id) => {
+export const serviceGetUser = async (id) => {
     return await getUser(id);
 };
-export const createUserS = async (userData) => {
+export const serviceCreateUser = async (userData) => {
     return await createUser(userData);
 };
-export const updateUserS = async (id, userData) => {
+export const serviceUpdateUser = async (id, userData) => {
     return await updateUser(id, userData);
 };
-export const deleteUserS = async (id) => {
+export const serviceDeleteUser = async (id) => {
     return await deleteUser(id);
 };
 
 
 // ========== Login ==========
-export const loginUserS = async (userData) => {
+export const serviceLoginUser = async (userData) => {
     const { username, password } = userData;
     // Cek Kelengkapan Data
   if (!username || !password) {
@@ -95,7 +95,7 @@ export const loginUserS = async (userData) => {
 
 
 // ========== Register ==========
-export const registerUserS = async (userData) => {
+export const serviceRegisterUser = async (userData) => {
     const { name, username, password, email } = userData;
     // Cek kelengkapan data yang dimasukan user
     if (!name || !username || !password || !email) {

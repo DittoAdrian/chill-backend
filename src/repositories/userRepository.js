@@ -1,7 +1,5 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { pool } from '../utils/database.js'
+import { pool } from '../utils/userDatabase.js'
 dotenv.config();
 
 
