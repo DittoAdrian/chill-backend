@@ -1,7 +1,4 @@
-import dotenv from "dotenv";
-import { pool } from '../utils/userDatabase.js'
-dotenv.config();
-
+import { pool } from '../utils/usersDatabase.js'
 
 // get all users
 export const getUsers = async () => {
