@@ -6,8 +6,11 @@ import {
     UpdateUserData,
     deleteUser,
     loginUser,
-    registerUser
+    registerUser,
+    verifikasiUser
 } from '../controllers/userController.js'
+
+import { getVerifCode } from '../repositories/userRepository.js';
 
 const router = express.Router()
 
@@ -19,5 +22,8 @@ router.delete('/users/:id', deleteUser);
 
 router.post('/login', loginUser);
 router.post('/register', registerUser);
+router.post('/verifikasi', verifikasiUser);
+
+router.get('/testing',getVerifCode);
 
 export default router;

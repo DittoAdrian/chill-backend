@@ -5,7 +5,8 @@ import {
     serviceUpdateUser,
     serviceDeleteUser,
     serviceLoginUser,
-    serviceRegisterUser
+    serviceRegisterUser,
+    serviceVerificationUser
  } from '../services/userService.js';
 
 
@@ -90,4 +91,14 @@ export const registerUser = async (req, res)=>{
     }
 }
 
-
+// ========== Verifikasi ==========
+export const verifikasiUser = async(req, res) =>{
+    const userData = req.body;
+    try{
+        const data = await serviceVerificationUser(userData);
+        res.status(201).send(data);
+    }
+    catch(err){
+        res.send(err)
+    }
+}

@@ -138,22 +138,60 @@ export async function updateToken(userData) {
 }
 
 // Register
-export async function registerUser(value) {
+export async function registerUser(value, verifCode) {
   try {
-    const query = `
+    const queryUser = `
             INSERT INTO users (name, username, password, email, token)
             VALUES (?, ?, ?, ?, ?)
             `;
-    const [result] = await pool.query(query, value);
+    const queryVerif =`
+            INSERT INTO verification (user_id, verif_code)
+            VALUES (?, ?)
+    `
+    const [result] = await pool.query(queryUser, value);
     const id = result.insertId;
-    const newUserData = await getUser(id);
 
+    const [result2] = await pool.query(queryVerif, [id, verifCode])
+    const newUserData = await getUser(id);
     return {
       status: 201,
       message: "data berhasil dibuat",
       data: newUserData,
+      verify : result2
     };
   } catch (error) {
       throw error;
+  }
+}
+
+// Get Verification Code
+export async function getVerifCode(user_id){
+  const query = `
+        SELECT verif_code
+        FROM verification
+        WHERE user_id = ?
+  `
+  try{
+    const [result] = await pool.query(query,[user_id])
+    return result[0].verif_code;
+  }
+  catch(error){
+    throw error
+  }
+}
+
+// Update Status Verifikasi User
+export async function UpdateVerifikasi(user_id) {
+  const query = `
+    UPDATE users
+    SET verification = 1
+    WHERE id = ?
+  `
+  try{
+    const [result] = await pool.query(query,[user_id])
+    return result
+  }
+  catch(error){
+    throw error
   }
 }
