@@ -31,6 +31,7 @@ export const serviceCreateMovie = async (payload)=> {
           status: 400,
           message: "Masukkan data dengan lengkap!"
         }};
+        
     const newPayload = {
         title : title,
         genreJSON : JSON.stringify(genre),

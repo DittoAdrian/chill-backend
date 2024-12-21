@@ -22,7 +22,15 @@ export const getAllMovies = async (req, res) => {
 //Create Movie
 export const createMovie = async (req, res) => {
   try {
-    const payload = req.body;
+
+    if(!req.file) {
+      return res.status(400).json({message : 'tidak ada file yang diupload'})
+    }
+
+    const payload = {
+      ...req.body,
+      image: req.file.filename,
+    };
     const result = await serviceCreateMovie(payload);
     res.status(200).send(result);
   } catch (err) {

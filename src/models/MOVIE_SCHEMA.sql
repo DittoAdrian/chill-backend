@@ -3,7 +3,7 @@ CREATE TABLE movies (
     movie_id INT AUTO_INCREMENT PRIMARY KEY, -- ID untuk setiap film
     title VARCHAR(255) NOT NULL,             -- Judul film
     genre JSON,                              -- Genre dalam format JSON ["Action", "Drama"]
-    release_year YEAR,                            -- Tahun rilis film
+    release_year YEAR,                       -- Tahun rilis film
     rating FLOAT,                            -- Rating film
     deskripsi TEXT,                          -- Deskripsi film
     image VARCHAR(255),                      -- URL atau path
