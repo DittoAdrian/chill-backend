@@ -14,7 +14,7 @@ import {
   getUserByUsername,
   registerUser,
   getVerifCode,
-  UpdateVerifikasi
+  UpdateVerifikasi,
 } from "../repositories/userRepository.js";
 
 const sendVerification = async (code, email) => {
@@ -151,7 +151,6 @@ export const serviceRegisterUser = async (userData) => {
     }
     // Hash Password
     const hashPass = await bcrypt.hash(password, 12);
-
     // Generate Token for User
     const payload = {
       username: username,
@@ -160,15 +159,12 @@ export const serviceRegisterUser = async (userData) => {
     const secret = process.env.SECRET_KEY;
     const timeExp = 60 * 60 * 2;
     const token = jwt.sign(payload, secret, { expiresIn: timeExp });
-
     // Generate Verification Code
     const rndmNum = () => Math.floor(Math.random() * 9);
     const code = `${rndmNum()}${rndmNum()}${rndmNum()}${rndmNum()}${rndmNum()}${rndmNum()}`;
     const verifCode = await bcrypt.hash(code, 12);
-
     const mailer = await sendVerification(code, email);
     console.log(mailer);
-
     const value = [name, username, hashPass, email, token];
     return await registerUser(value, verifCode);
   } catch (error) {
@@ -176,10 +172,9 @@ export const serviceRegisterUser = async (userData) => {
   }
 };
 
-
 // ========== Verifikasi ==========
-export const serviceVerificationUser = async(userData) => {
-  const {username, password, verificationCode} = userData;
+export const serviceVerificationUser = async (userData) => {
+  const { username, password, verificationCode } = userData;
 
   // Cek kelengkapan Data
   if (!username || !password || !verificationCode) {
@@ -187,9 +182,9 @@ export const serviceVerificationUser = async(userData) => {
       status: 400,
       message: "Masukkan data dengan lengkap!",
     };
-  };
+  }
 
-  try{
+  try {
     //Cek Username
     const resultUname = await getUserByUsername(username);
     if (!resultUname) {
@@ -197,11 +192,11 @@ export const serviceVerificationUser = async(userData) => {
         status: 401,
         message: "Username atau password salah.",
       };
-    };
+    }
 
     // Compare Password
     const isMatch = await bcrypt.compare(password, resultUname.password);
-    if (!isMatch){
+    if (!isMatch) {
       return {
         status: 401,
         message: "Username atau password salah.",
@@ -213,30 +208,28 @@ export const serviceVerificationUser = async(userData) => {
     if (!getCode) {
       return {
         status: 401,
-        message: "Akun tidak memiliki kode Verifikasi, lakukan kirim ulang kode Verifikasi"
+        message:
+          "Akun tidak memiliki kode Verifikasi, lakukan kirim ulang kode Verifikasi",
       };
-    };
+    }
 
     //Compare Code dengan code di dalam database
     const codeMatch = await bcrypt.compare(verificationCode, getCode);
-    if(codeMatch){
+    if (codeMatch) {
       const result = await UpdateVerifikasi(resultUname.id);
-      console.log(result)
+      console.log(result);
       return {
         status: 201,
         message: "Akun berhasil terverivikasi",
-        result : result
-      }
-    }
-    else{
+        result: result,
+      };
+    } else {
       return {
         status: 403,
-        message: "Kode Salah"
-      }
-    };
+        message: "Kode Salah",
+      };
+    }
+  } catch (error) {
+    throw error;
   }
-  catch(error){
-    throw error
-  }
-
-}
+};

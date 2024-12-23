@@ -22,9 +22,8 @@ export const getAllMovies = async (req, res) => {
 //Create Movie
 export const createMovie = async (req, res) => {
   try {
-
-    if(!req.file) {
-      return res.status(400).json({message : 'tidak ada file yang diupload'})
+    if (!req.file) {
+      return res.status(400).json({ message: "tidak ada file yang diupload" });
     }
 
     const payload = {
@@ -40,7 +39,7 @@ export const createMovie = async (req, res) => {
 
 // Delete Movies
 export const deleteMovie = async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
   try {
     const result = await serviceDeleteMovie(id);
     res.status(202).send(result);
@@ -54,8 +53,10 @@ export const getMovieBySearch = async (req, res) => {
   const { title } = req.params;
 
   // Validasi input
-  if (!title || typeof title !== 'string') {
-    return res.status(400).send({ message: "Parameter 'title' is required and must be a string." });
+  if (!title || typeof title !== "string") {
+    return res
+      .status(400)
+      .send({ message: "Parameter 'title' is required and must be a string." });
   }
 
   try {
@@ -124,7 +125,7 @@ export const filterByGenre = async (req, res) => {
 
 //Update View Count
 export const updateView = async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
   try {
     const result = await serviceUpdateView(id);
     res.status(200).send(result);
